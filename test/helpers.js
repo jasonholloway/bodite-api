@@ -1,3 +1,5 @@
+process.env.JWT_SECRET = 'Large otter';
+
 
 var proxyquire = require('proxyquire').noPreserveCache();
 
@@ -7,3 +9,4 @@ function buildApp(fakes) {
 }
 
 module.exports.buildApp = buildApp;
+

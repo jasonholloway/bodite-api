@@ -1,5 +1,3 @@
-process.env.JWT_SECRET = 'Large otter';
-
 var expect = require('chai').expect;
 var agent = require('supertest');
 var sinon = require('sinon');

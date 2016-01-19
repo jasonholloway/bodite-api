@@ -1,44 +1,31 @@
 var expect = require('chai').expect;
 var agent = require('supertest');
-var proxyquire = require('proxyquire');
+var sinon = require('sinon');
+var helpers = require('./helpers');
+var buildApp = helpers.buildApp;
+
+var jwt = require('jsonwebtoken');
+
 var DummyStrategy = require('passport-dummy').Strategy;
 
-
-var fakeKeys = {
-    key1: '124fdqwf',
-    key2: 'asdsadk324'
-}
-
-var createServer = proxyquire('../server', 
-                        { 
-                            './keySource': { 
-                                getKeys: function() {                             
-                                    return Promise.resolve(fakeKeys);
-                                } 
-                            }
-                        });
-                        
-var app;
 
 
 function useDummyAuth(a) {
     a.passport.use('bearer', new DummyStrategy(
-        function(done) {
+        function(done) {            
             return done(null, {username: 'dummy'});
         }
     ));
 }
 
 
-beforeEach(function() {        
-    app = createServer();
-});
 
 describe('key endpoint', function() {
     var keysUrl = '/api/keys';
             
 
-    it('is exposed', function(cb) {
+    it('is exposed', function(cb) {        
+        var app = buildApp();        
         useDummyAuth(app);
         
         agent(app)
@@ -50,7 +37,16 @@ describe('key endpoint', function() {
     });
 
 
-    it('returns key collection', function(cb) {
+    it('returns key collection', function(cb) {        
+        var fakeKeys = {
+            key1: '124fdqwf',
+            key2: 'asdsadk324'
+        }
+        
+        var app = buildApp({
+            './keySource': { getKeys: sinon.stub().returns(Promise.resolve(fakeKeys)) }
+        });
+        
         useDummyAuth(app);
         
         agent(app)
@@ -63,6 +59,8 @@ describe('key endpoint', function() {
     
     
     it('rejects without token', function(cb) {
+        var app = buildApp();
+        
         agent(app)
         .get(keysUrl)
         .expect(401)
@@ -70,10 +68,14 @@ describe('key endpoint', function() {
     });
     
     
-    it.skip('accepts with token', function(cb) {
+    it('accepts token and returns happy', function(cb) {
+        var app = buildApp();
+        
+        var token = jwt.sign({ user: { name: 'Brian' } }, app.jwtSecret);
+        
         agent(app)
         .get(keysUrl)
-        .set('Token', '12345678')
+        .set('Authorization', 'Bearer ' + token)
         .expect(200)
         .end(cb);
     });
