@@ -20,18 +20,30 @@ function createServer() {
         throw new Error('JWT_SECRET env var not declared!');
     }
     
-    var jwtSecret = app.jwtSecret = process.env.JWT_SECRET;
+    app.jwtSecret = process.env.JWT_SECRET;
+    
+    
+    if(!process.env.JWT_LIFETIME) {
+        throw new Error('JWT_LIFETIME env var not declared!');
+    }
+    
+    app.jwtLifetime = process.env.JWT_LIFETIME;
+    
     
     app.use(bodyParser.json());
     app.use(passport.initialize());
 
     passport.use('bearer', new BearerStrategy(
                                 function(token, done) {
-                                    jwt.verify(token, jwtSecret, 
-                                        function(err, decoded) {
-                                            return err
-                                                    ? done(err)
-                                                    : done(null, decoded);
+                                    jwt.verify(token, app.jwtSecret, 
+                                        function(err, decoded) {                                            
+                                            if(err) return done(err);                                            
+                                            if(!decoded) return done(null, false);
+                                            
+                                            var age = Date.now() - decoded.created;
+                                            if(age >= app.jwtLifetime) return done(null, false);
+                                                
+                                            return done(null, decoded);
                                         });                    
                                 }));
 
@@ -49,7 +61,7 @@ function createServer() {
                                     user: user, 
                                     created: Date.now() 
                                 }, 
-                                jwtSecret);   
+                                app.jwtSecret);   
                              
                 res.status(200).send({ token: token }); 
             }

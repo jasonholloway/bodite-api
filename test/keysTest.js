@@ -69,9 +69,14 @@ describe('key endpoint', function() {
     
     
     it('accepts token and returns happy', function(cb) {
-        var app = buildApp();
+        var app = buildApp({
+            './keySource': { getKeys: sinon.stub().returns(Promise.resolve({})) }
+        });
         
-        var token = jwt.sign({ user: { name: 'Brian' } }, app.jwtSecret);
+        var token = jwt.sign({ 
+                            user: { name: 'Brian' }, 
+                            created: Date.now() 
+                        }, app.jwtSecret);
         
         agent(app)
         .get(keysUrl)
@@ -79,6 +84,62 @@ describe('key endpoint', function() {
         .expect(200)
         .end(cb);
     });
+    
+    
+    it('respects live token', function(cb) {
+        var app = buildApp({
+            './keySource': { getKeys: sinon.stub().returns(Promise.resolve({})) }
+        });
+        
+        var token = jwt.sign({ 
+                        user: { name: 'Brian' },
+                        created: Date.now() 
+                    }, app.jwtSecret);
+        
+        agent(app)
+        .get(keysUrl)
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200)
+        .end(function(e) {
+            if(e) cb(e);
+        });
+        
+        agent(app)
+        .get(keysUrl)
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200)
+        .end(cb);
+    });
+
+
+    it('rejects dead token', function(cb) {
+        var app = buildApp({
+            './keySource': { getKeys: sinon.stub().returns(Promise.resolve({})) }
+        });
+        
+        var token = jwt.sign({ 
+                        user: { name: 'Brian' },
+                        created: Date.now() 
+                    }, app.jwtSecret);
+        
+        agent(app)
+        .get(keysUrl)
+        .set('Authorization', 'Bearer ' + token)
+        .expect(200)        
+        .expect(function(r) {
+            app.jwtLifetime = 0;
+                        
+            agent(app)
+            .get(keysUrl)
+            .set('Authorization', 'Bearer ' + token)
+            .expect(401)
+            .end(cb);
+        })                
+        .end(function(e) {
+            if(e) cb(e);
+        });
+    });
+
 
 
 });
