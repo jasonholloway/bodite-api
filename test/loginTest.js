@@ -11,7 +11,7 @@ describe('login endpoint', function() {
     
     it('is exposed', function(cb) {
         var app = buildApp({
-            './userSource': { verify: sinon.stub() }
+            './userVerifier': { verify: sinon.stub() }
         });
         
         agent(app)
@@ -27,7 +27,7 @@ describe('login endpoint', function() {
         var verifySpy = sinon.stub().returns({ name: 'Jason' });
                 
         var app = buildApp({
-            './userSource' : { verify: verifySpy }
+            './userVerifier' : { verify: verifySpy }
         });
         
         agent(app)
@@ -43,7 +43,7 @@ describe('login endpoint', function() {
     
     it('requests token from tokenSource, which is then returned', function(cb) {        
         var app = buildApp({
-            './userSource' : { verify: sinon.stub().returns({ name: 'Humbert' })},
+            './userVerifier' : { verify: sinon.stub().returns({ name: 'Humbert' })},
         });
         
         agent(app)
@@ -60,7 +60,7 @@ describe('login endpoint', function() {
     
     it('bad credentials incur 401 rejection', function(cb) {        
         var app = buildApp({
-            './userSource' : { verify: sinon.stub().returns(false) }
+            './userVerifier' : { verify: sinon.stub().returns(false) }
         });
         
         agent(app)

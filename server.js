@@ -5,7 +5,7 @@ var Passport = require('passport').Passport;
 var BearerStrategy = require('passport-http-bearer').Strategy;
 
 var keySource = require('./keySource');
-var userSource = require('./userSource');
+var userVerifier = require('./userVerifier');
 
 
 function createServer() {
@@ -53,7 +53,7 @@ function createServer() {
     apiRouter.post(
         '/login',
         function(req, res) {
-            var user = userSource.verify(req.body.name, req.body.password);
+            var user = userVerifier.verify(req.body.name, req.body.password);
             
             if(user) {                
                 var token = jwt.sign(
