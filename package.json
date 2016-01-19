@@ -9,8 +9,10 @@
   "author": "Jason Holloway",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "express-router": "0.0.1",
+    "jsonwebtoken": "^5.5.4",
     "node-promise": "^0.5.12",
     "passport": "^0.3.2",
     "passport-http-bearer": "^1.0.1"
@@ -21,6 +23,7 @@
     "mocha": "^2.3.4",
     "passport-dummy": "0.0.1",
     "proxyquire": "^1.7.3",
+    "sinon": "^1.17.2",
     "supertest": "^1.1.0"
   }
 }

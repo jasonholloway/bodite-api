@@ -1,7 +1,10 @@
-var app = require('./server');
+var serverFactory = require('./server');
 
-var port = process.env.port || 8691;
+var server = serverFactory();
 
-app.listen(port);
+
+var port = process.env.API_PORT || 8691;
+
+server.listen(port);
 
 console.log('API available on port ' + port);
