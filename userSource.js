@@ -15,7 +15,6 @@ UserSource.prototype.getUsers = function() {
     return Promise.resolve(users);
     
         // { name: 'Jason', passwordHash: '12323144214', passwordSalt: 'adffe' }
-    // ]);
 }
 
 UserSource.prototype.findUser = function(name) {
