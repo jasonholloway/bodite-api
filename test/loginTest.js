@@ -14,7 +14,7 @@ describe('login endpoint', function() {
             './userVerifier': { verifyUser: sinon.stub().returns(Promise.resolve({})) }
         });
         
-        agent(app)
+        agent(app.express)
         .post(loginUrl)
         .expect(function(r) {
             expect(r.status).to.not.equal(404);
@@ -30,7 +30,7 @@ describe('login endpoint', function() {
             './userVerifier' : { verifyUser: verifySpy }
         });
         
-        agent(app)
+        agent(app.express)
         .post(loginUrl)
         .send({ name: 'jason', password: 'tralalala' })        
         .expect(function(r) {
@@ -46,7 +46,7 @@ describe('login endpoint', function() {
             './userVerifier' : { verifyUser: sinon.stub().returns(Promise.resolve({ name: 'Humbert' })) },
         });
         
-        agent(app)
+        agent(app.express)
         .post(loginUrl)
         .send({ name: '', password: '' })
         .expect(function(r) {            
@@ -63,7 +63,7 @@ describe('login endpoint', function() {
             './userVerifier' : { verifyUser: sinon.stub().returns(Promise.resolve(false)) }
         });
         
-        agent(app)
+        agent(app.express)
         .post(loginUrl)
         .send({ name: 'Penelope', password: 'trout99' })
         .expect(401)

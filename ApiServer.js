@@ -1,3 +1,4 @@
+var assert = require('assert');
 var express = require('express');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
@@ -8,49 +9,41 @@ var keySource = require('./keySource');
 var userVerifier = require('./userVerifier');
 
 
-function createServer() {
 
-    var app = express();
-    var apiRouter = express.Router();
-
-    var passport = app.passport = new Passport();
+function ApiServer() {    
+    var self = this;
     
+    var exp = self.express = express();
+    var passport = self.passport = new Passport();
     
-    if(!process.env.JWT_SECRET) {
-        throw new Error('JWT_SECRET env var not declared!');
-    }
-    
-    app.jwtSecret = process.env.JWT_SECRET;
-    
-    
-    if(!process.env.JWT_LIFETIME) {
-        throw new Error('JWT_LIFETIME env var not declared!');
-    }
-    
-    app.jwtLifetime = process.env.JWT_LIFETIME;
-    
-    
-    app.use(bodyParser.json());
-    app.use(passport.initialize());
+    assert(self.jwtSecret = process.env.JWT_SECRET, 
+                    'JWT_SECRET env var undeclared!');
+        
+    assert(self.jwtLifetime = process.env.JWT_LIFETIME, 
+                    'JWT_LIFETIME env var undeclared!');
+        
+    exp.use(bodyParser.json());
+    exp.use(passport.initialize());
 
     passport.use('bearer', new BearerStrategy(
                                 function(token, done) {
-                                    jwt.verify(token, app.jwtSecret, 
+                                    jwt.verify(token, self.jwtSecret, 
                                         function(err, decoded) {                                            
                                             if(err) return done(err);                                            
                                             if(!decoded) return done(null, false);
                                             
                                             var age = Date.now() - decoded.created;
-                                            if(age >= app.jwtLifetime) return done(null, false);
+                                            if(age >= self.jwtLifetime) return done(null, false);
                                                 
                                             return done(null, decoded);
                                         });                    
                                 }));
 
-    app.use('/api', apiRouter);
+    var api = self.api = express.Router();
+    exp.use('/api', api);
 
 
-    apiRouter.post(
+    api.post(
         '/login',
         function(req, res) {            
             userVerifier.verifyUser(req.body.name, req.body.password)
@@ -60,7 +53,7 @@ function createServer() {
                                                     user: user, 
                                                     created: Date.now() 
                                                 }, 
-                                                app.jwtSecret);   
+                                                self.jwtSecret);   
                                                 
                                             
                                 res.status(200).send({ token: token }); 
@@ -75,7 +68,7 @@ function createServer() {
         });
 
 
-    apiRouter.get(
+    api.get(
         '/keys',
         passport.authenticate('bearer', { session: false }),
         function(req, res) {            
@@ -83,9 +76,17 @@ function createServer() {
                         .then(function(keys) {
                             res.status(200).send(keys);            
                         });        
-        });
-        
-    return app;
+        });        
 }
 
-module.exports = createServer;
+
+
+
+ApiServer.prototype.listen = function(port) {
+    this.exp.listen(port);
+}
+
+
+
+
+module.exports = ApiServer;

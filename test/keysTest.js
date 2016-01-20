@@ -28,7 +28,7 @@ describe('key endpoint', function() {
         var app = buildApp();        
         useDummyAuth(app);
         
-        agent(app)
+        agent(app.express)
         .get(keysUrl)
         .expect(function(r) {       
             expect(r.status).to.not.equal(404);
@@ -49,7 +49,7 @@ describe('key endpoint', function() {
         
         useDummyAuth(app);
         
-        agent(app)
+        agent(app.express)
         .get(keysUrl)
         .set('Accepts', 'application/json')
         .expect(200)
@@ -61,7 +61,7 @@ describe('key endpoint', function() {
     it('rejects without token', function(cb) {
         var app = buildApp();
         
-        agent(app)
+        agent(app.express)
         .get(keysUrl)
         .expect(401)
         .end(cb);
@@ -78,7 +78,7 @@ describe('key endpoint', function() {
                             created: Date.now() 
                         }, app.jwtSecret);
         
-        agent(app)
+        agent(app.express)
         .get(keysUrl)
         .set('Authorization', 'Bearer ' + token)
         .expect(200)
@@ -96,7 +96,7 @@ describe('key endpoint', function() {
                         created: Date.now() 
                     }, app.jwtSecret);
         
-        agent(app)
+        agent(app.express)
         .get(keysUrl)
         .set('Authorization', 'Bearer ' + token)
         .expect(200)
@@ -104,7 +104,7 @@ describe('key endpoint', function() {
             if(e) cb(e);
         });
         
-        agent(app)
+        agent(app.express)
         .get(keysUrl)
         .set('Authorization', 'Bearer ' + token)
         .expect(200)
@@ -122,14 +122,14 @@ describe('key endpoint', function() {
                         created: Date.now() 
                     }, app.jwtSecret);
         
-        agent(app)
+        agent(app.express)
         .get(keysUrl)
         .set('Authorization', 'Bearer ' + token)
         .expect(200)        
         .expect(function(r) {
             app.jwtLifetime = 0;
                         
-            agent(app)
+            agent(app.express)
             .get(keysUrl)
             .set('Authorization', 'Bearer ' + token)
             .expect(401)

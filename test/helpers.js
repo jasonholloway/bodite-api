@@ -6,8 +6,8 @@ process.env.API_USERS = JSON.stringify([{ name: 'Jason', passwordHash: 'asdasdas
 var proxyquire = require('proxyquire').noPreserveCache();
 
 function buildApp(fakes) {
-    var fac = proxyquire('../server', fakes || {});                            
-    return fac();
+    var ApiServer = proxyquire('../ApiServer', fakes || {});                            
+    return new ApiServer();
 }
 
 module.exports.buildApp = buildApp;
