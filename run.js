@@ -1,15 +1,23 @@
-var argv = require('optimist').argv;
+var args = require('minimist')(process.argv);
 var ApiServer = require('./ApiServer');
-
-var server = new ApiServer();
 
 
 var port = process.env.PORT || 443;
 
 
-if(argv.dumpUsers) {
-    console.log('ta-da');
+console.log(args);
+
+if(args.dumpUsers) {
+    var userSource = require('./userSource');
+    
+    userSource.getUsers()
+    .then(function(users) {
+        console.log('users: ' + JSON.stringify(users));
+    });    
 }
+
+
+var server = new ApiServer();
 
 server.listen(port);
 

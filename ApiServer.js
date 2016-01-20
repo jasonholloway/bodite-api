@@ -9,8 +9,7 @@ var keySource = require('./keySource');
 var userVerifier = require('./userVerifier');
 
 
-
-function ApiServer() {    
+function ApiServer() {        
     var self = this;
     
     var exp = self.express = express();
@@ -83,7 +82,7 @@ function ApiServer() {
 
 
 ApiServer.prototype.listen = function(port) {
-    this.exp.listen(port);
+    this.express.listen(port);
 }
 
 
