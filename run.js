@@ -5,8 +5,6 @@ var ApiServer = require('./ApiServer');
 var port = process.env.PORT || 443;
 
 
-console.log(args);
-
 if(args.dumpUsers) {
     var userSource = require('./userSource');
     
