@@ -53,21 +53,25 @@ function createServer() {
     apiRouter.post(
         '/login',
         function(req, res) {
-            var user = userVerifier.verify(req.body.name, req.body.password);
-            
-            if(user) {                
-                var token = jwt.sign(
-                                { 
-                                    user: user, 
-                                    created: Date.now() 
-                                }, 
-                                app.jwtSecret);   
-                             
-                res.status(200).send({ token: token }); 
-            }
-            else {
-                res.status(401).send();   
-            }
+            userVerifier.verify(req.body.name, req.body.password)
+                        .then(function(user) {
+                            if(user) {                
+                                var token = jwt.sign({ 
+                                                    user: user, 
+                                                    created: Date.now() 
+                                                }, 
+                                                app.jwtSecret);   
+                                                
+                                            
+                                res.status(200).send({ token: token }); 
+                            }
+                            else {
+                                res.status(401).send();   
+                            }
+                        })
+                        .catch(function(err) {
+                            throw err;
+                        });            
         });
 
 

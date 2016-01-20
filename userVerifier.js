@@ -1,20 +1,43 @@
-require('lodash');
+var _ = require('lodash');
+var userSource = require('./userSource');
+var crypto = require('crypto-js');
+
+
 
 function UserVerifier() {
-    this.users = [];
+    //...
 }
 
 
-
-UserVerifier.prototype.verify = function(name, password) {
+UserVerifier.prototype.hashPassword = function(password, salt) {
     
-    //find user with name and hash...        
-    
-    
-    return {
-        // name: user.name
-    }    
 }
 
 
-exports.modules = new UserVerifier();
+UserVerifier.prototype.test = function(password, salt, hash) {    
+    return this.hash(salt + password) === hash;
+}
+
+
+UserVerifier.prototype.hash = function(inp) {
+    return crypto.SHA256(inp).toString();
+}
+
+
+UserVerifier.prototype.verifyUser = function(name, password) {    
+    var self = this;
+    
+    return userSource.findUser(name)
+            .then(function(user) {
+                if(user && self.test(password, user.passwordSalt, user.passwordHash)) {                    
+                    return {
+                        name: user.name  
+                    };
+                }        
+                
+                return null;
+            });    
+}
+
+
+module.exports = new UserVerifier();
