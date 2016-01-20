@@ -4,6 +4,7 @@
   "description": "API for bodite",
   "main": "run.js",
   "scripts": {
+    "start": "node run.js",
     "test": "mocha"
   },
   "author": "Jason Holloway",

@@ -52,8 +52,8 @@ function createServer() {
 
     apiRouter.post(
         '/login',
-        function(req, res) {
-            userVerifier.verify(req.body.name, req.body.password)
+        function(req, res) {            
+            userVerifier.verifyUser(req.body.name, req.body.password)
                         .then(function(user) {
                             if(user) {                
                                 var token = jwt.sign({ 
