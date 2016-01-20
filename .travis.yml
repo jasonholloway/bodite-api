@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+- '4.1'
+install:
+- npm install
+script:
+- npm test
+deploy:
+  provider: heroku
+  app: bodite-api
+  api_key:
+    secure: ZGFzgWyr0fOZH8gmCLPYx/Rh7zb2cZQaiKuPyJBOptdXyZPRgSyIeP2/jemhvj4nUUzY0O6n/eM/1Nsyoxap/9d8+bzpSoXa5SBc0VAb0tRAWFMovfH7mcu0wTofaKSTHhknySTcBgLRHzO4ztrOWtsbmx2In0GZ+zwE6qmB/ovHWPoVR9Acv2wHQBlw3o2NCVKhLWu7H6+hZ008KnV5JqCXUGfzVCowk9zE2URVapmJQIb7mPuIdADWDztXaJpkJ7RJKSNDi9y769AVHDnXyV3BiNAyWv1PUAwBlN6JeEqR99hcRmfPwcmRe7yKrb8YMcrdJ/cOItQOvVFyRXlzhVZyCsoR12cno1w3ay8QNPz0PqJO5fHw3UyTcPopx1h6XPlY+5TtxssZqgRUWyjzCMcNfO3fpcqrH+8uD7e/T5nkJSaIcakQn+mH46bL2uwsWnokXlyJXg3t1GxgbrK5FjM74M8/ovmzjKsGnX+QSQ9VHGiTx7hicNFlet/JIhDykK1SA3264gVZcoqyb0mmTnoSYdrw9Ze2B47HoXSPBadL2z/GW2iq2y8Q5b47flmx2pcOxt9xo6/1qW6avv+ePC4ThOtq0DOBKhydxJ8uZAKBoh57WzPVLkNkTpriFr/8+/vZpTv3NSCbnN5dsZhkQMSB+g9tgRH/gSO3l2BaK1o=
+  skip_cleanup: true
