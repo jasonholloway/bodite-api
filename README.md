@@ -1,4 +1,5 @@
 # bodite-api
-Brigitas Bodite back-end
+[![Build Status](https://travis-ci.org/jasonholloway/bodite-api.svg?branch=master)](https://travis-ci.org/jasonholloway/bodite-api)
+Brigitas Bodite back-end services
 
-Server-side authorization services for SPA
+Mostly authorization-related
